@@ -1,20 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatusBar } from "expo-status-bar";
+import Home from "./pages/Home";
+import Calendar from "./pages/Calendar";
+import Library from "./pages/Library";
+import MyPage from "./pages/MyPage";
+import { NavigationContainer } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+    <NavigationContainer>
       <StatusBar style="auto" />
-    </View>
-  );
-}
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color }) => {
+            let iconName;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+            if (route.name === "HOME") {
+              iconName = "home";
+            } else if (route.name === "CALENDAR") {
+              iconName = "calendar-alt";
+            } else if (route.name === "LIBRARY") {
+              iconName = "dumbbell";
+            } else if (route.name === "MY PAGE") {
+              iconName = "user-alt";
+            }
+
+            return <FontAwesome5 name={iconName} color={color} size={18} />;
+          },
+          tabBarActiveTintColor: "tomato",
+          tabBarInactiveTintColor: "gray",
+        })}
+      >
+        <Tab.Screen name="HOME" component={Home} />
+        <Tab.Screen name="CALENDAR" component={Calendar} />
+        <Tab.Screen name="LIBRARY" component={Library} />
+        <Tab.Screen name="MY PAGE" component={MyPage} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
