@@ -1,27 +1,26 @@
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { flexStyle } from "../GlobalStyle";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { useState } from "react";
-import Body from "../components/Body";
+import Days from "../components/Days";
+import Header from "../components/Header";
+import DayOfTheWeek from "../components/DayOfTheWeek";
 
+// 화면 꽉차게 width 설정
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Calendar = () => {
+  // 이번 달 날짜 구하기(지난 달, 다음 달 일부 포함)
+  // 일: 1~31, 월: 0~11, 요일: 1~7 (월은 0부터 시작하므로 +1)
   const DATE = new Date();
   const YEAR = DATE.getFullYear();
   const MONTH = DATE.getMonth() + 1;
   const DAY = DATE.getDate();
-  const today = { year: YEAR, month: MONTH, date: DAY };
+  const today = { year: YEAR, month: MONTH, day: DAY };
   const [year, setYear] = useState(YEAR);
   const [month, setMonth] = useState(MONTH);
 
   const nextMonthBtn = () => {
+    // 예외처리: 12월 다음은 1월
     if (month === 12) {
       setYear((prev) => prev + 1);
       setMonth(1);
@@ -30,6 +29,7 @@ const Calendar = () => {
     }
   };
   const prevMonthBtn = () => {
+    // 예외처리: 1월 이전은 12월
     if (month === 1) {
       setYear((prev) => prev - 1);
       setMonth(12);
@@ -40,40 +40,22 @@ const Calendar = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={prevMonthBtn}>
-          <FontAwesome5 name="angle-left" size={30} color="tomato" />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 16 }}>
-          {month}월&nbsp;&nbsp;{year}
-        </Text>
-        <TouchableOpacity onPress={nextMonthBtn}>
-          <FontAwesome5 name="angle-right" size={30} color="tomato" />
-        </TouchableOpacity>
-      </View>
+      <Header
+        year={year}
+        month={month}
+        nextMonthBtn={nextMonthBtn}
+        prevMonthBtn={prevMonthBtn}
+        SCREEN_WIDTH={SCREEN_WIDTH}
+      />
       <View style={styles.body}>
-        <View style={styles.dayOfTheWeekBox}>
-          {dayOfTheWeekArr.map((el, idx) => (
-            <Text key={idx} style={dayOfTheWeekStyles(el).dayOfTheWeek}>
-              {el}
-            </Text>
-          ))}
-        </View>
-        <Body year={year} month={month} today={today} />
+        <DayOfTheWeek />
+        <Days year={year} month={month} today={today} />
       </View>
     </View>
   );
 };
 
 export default Calendar;
-
-const dayOfTheWeekArr = ["일", "월", "화", "수", "목", "금", "토"];
-const dayOfTheWeekStyles = (day) =>
-  StyleSheet.create({
-    dayOfTheWeek: {
-      color: day === "일" ? "red" : day === "토" ? "blue" : "gray",
-    },
-  });
 
 const styles = StyleSheet.create({
   container: flexStyle,
@@ -83,18 +65,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: SCREEN_WIDTH,
-    padding: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 30,
   },
   body: {
     flex: 9.5,
     width: SCREEN_WIDTH,
     padding: 20,
-  },
-  dayOfTheWeekBox: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginBottom: 20,
   },
 });
