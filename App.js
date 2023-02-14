@@ -6,7 +6,6 @@ import Library from "./pages/Library";
 import MyPage from "./pages/MyPage";
 import { NavigationContainer } from "@react-navigation/native";
 import { FontAwesome5 } from "@expo/vector-icons";
-
 const Tab = createBottomTabNavigator();
 
 const App = () => {
